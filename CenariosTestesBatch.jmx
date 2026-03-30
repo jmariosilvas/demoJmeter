@@ -26,9 +26,11 @@
           </elementProp>
         </collectionProp>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
-      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="dbConnection ">
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="devConnection ">
         <boolProp name="autocommit">true</boolProp>
         <stringProp name="checkQuery"></stringProp>
         <stringProp name="connectionAge">5000</stringProp>
@@ -47,7 +49,26 @@
         <stringProp name="username">idq</stringProp>
       </JDBCDataSource>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="startGroovy">
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="ptecConnection ">
+        <boolProp name="autocommit">true</boolProp>
+        <stringProp name="checkQuery"></stringProp>
+        <stringProp name="connectionAge">5000</stringProp>
+        <stringProp name="connectionProperties"></stringProp>
+        <stringProp name="dataSource">ptecConnection</stringProp>
+        <stringProp name="dbUrl">jdbc:oracle:thin:@//oklx1rac01-scan.seg-social.pt :1521/ptecdev.seg-social.pt </stringProp>
+        <stringProp name="driver">oracle.jdbc.OracleDriver</stringProp>
+        <stringProp name="initQuery">SELECT SYSDATE FROM DUAL</stringProp>
+        <boolProp name="keepAlive">true</boolProp>
+        <stringProp name="password">des</stringProp>
+        <stringProp name="poolMax">10</stringProp>
+        <boolProp name="preinit">false</boolProp>
+        <stringProp name="timeout">10000</stringProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <stringProp name="trimInterval">60000</stringProp>
+        <stringProp name="username">ptec</stringProp>
+      </JDBCDataSource>
+      <hashTree/>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="startGroovy" enabled="true">
         <stringProp name="cacheKey">true</stringProp>
         <stringProp name="filename"></stringProp>
         <stringProp name="parameters"></stringProp>
@@ -149,7 +170,7 @@ log.info(&quot;ersponse completo: \n&quot;+response)</stringProp>
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -171,7 +192,7 @@ else
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -180,6 +201,102 @@ else
 log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
 
 if(hasCount == 3){
+	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault">
+          <stringProp name="dataSource">ptecConnection</stringProp>
+          <stringProp name="query">SELECT * FROM FRAB.argumento_execucao where identificador_execucao in (&apos;345bf4c9acc64435880bcd187c53d549&apos;)</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">IDENTIFICADOR_EXECUCAO, VALOR_SIMPLES, VALOR_SERIALIZADO, NOME, DESCRICAO, OBRIGATORIO, TIPO, IDENTIFICADOR_ARGUMENTO</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def response = prev.getResponseDataAsString()
+
+if(response.contains(&quot;Por omissao, &lt;ptss&gt;.&quot;)){
+	log.info(&quot;Validar omissão, ptss [ok]&quot;)
+	prev.setSuccessful(true)
+
+}else{
+	log.error(&quot;Validar de omissão não encontrado ptss&quot;)
+	prev.setSuccessful(false)
+	}
+
+
+log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="formmater">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def response = prev.getResponseDataAsString()
+
+// separa as linhas
+def linhas = response.split(&quot;\n&quot;).collect { it.trim() }
+
+// separa as colunas (espaços múltiplos)
+def tabela = linhas.collect { it.split(/\s+/) }
+
+// calcula a largura de cada coluna
+def larguras = []
+
+for (cols in tabela) {
+    for (int i = 0; i &lt; cols.size(); i++) {
+        def col = cols[i]
+        if (i &gt;= larguras.size()) {
+            larguras &lt;&lt; col.size()
+        } else if (col.size() &gt; larguras[i]) {
+            larguras[i] = col.size()
+        }
+    }
+}
+
+// monta a tabela formatada
+def output = []
+for (cols in tabela) {
+    def linha = []
+    for (int i = 0; i &lt; cols.size(); i++) {
+        linha &lt;&lt; cols[i].padRight(larguras[i])
+    }
+    output &lt;&lt; linha.join(&quot;  &quot;)
+}
+
+log.info(&quot;Tabela formatada:\n&quot; + output.join(&quot;\n&quot;))</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def hasCount = vars.get(&quot;IDENTIFICADOR_ARGUMENTO_#&quot;)?.trim()?.toInteger()
+
+log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
+
+if(hasCount &gt;= 1){
 	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
 }
 else
@@ -206,7 +323,7 @@ else
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
