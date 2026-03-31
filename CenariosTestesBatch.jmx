@@ -31,11 +31,18 @@
           </elementProp>
           <elementProp name="path" elementType="Argument">
             <stringProp name="Argument.name">path</stringProp>
-            <stringProp name="Argument.value">eeaoc/rest/eeaoc/valores-remuneracao/entidade-empregadora/v2</stringProp>
+            <stringProp name="Argument.value">/eeaoc/rest/eeaoc/valores-remuneracao/entidade-empregadora/v2</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="COUNTER" elementType="Argument">
+            <stringProp name="Argument.name">COUNTER</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="util_PostProcessor">
@@ -63,6 +70,62 @@ def expectField = { fieldName -&gt;
 
 props.put(&quot;expectField&quot;, expectField)
 log.info(&quot;\n/nFunção expectField carregada e disponível globalmente.&quot;)</stringProp>
+      </JSR223PostProcessor>
+      <hashTree/>
+      <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="commonTeest" enabled="true">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy
+
+def sampler = ctx.getCurrentSampler()
+
+if (sampler instanceof HTTPSamplerProxy &amp;&amp; prev?.getURL()) {
+    def url = prev.getURL()
+    vars.put(&quot;requestUrlSalvo&quot;, url.toString())
+    if (url.getPath().toLowerCase().contains(&quot;v2&quot;)) log.info(&quot;Testes sendo executados na v2&quot;)
+}</stringProp>
+      </JSR223PostProcessor>
+      <hashTree/>
+      <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="interador" enabled="true">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">import groovy.json.JsonSlurper
+
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy
+
+def sampler = ctx.getCurrentSampler()
+
+if (sampler instanceof HTTPSamplerProxy ) {
+	def count = vars.get(&quot;COUNTER&quot;) as Integer ?: 0
+	count++
+	vars.put(&quot;COUNTER&quot;, count.toString())
+    
+}
+</stringProp>
+      </JSR223PostProcessor>
+      <hashTree/>
+      <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="catchnaturezaRemuneracao" enabled="true">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">import groovy.json.JsonSlurper
+
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy
+
+def sampler = ctx.getCurrentSampler()
+
+if (sampler instanceof HTTPSamplerProxy ) {
+	def json = new JsonSlurper().parseText(sampler.getArguments().getArgument(0).getValue())
+	def naturezaRemuneracao = json.valores[0].naturezaRemuneracao
+	vars.put(&quot;valorNaturezaRemuneracao&quot;, naturezaRemuneracao)
+    
+}
+</stringProp>
       </JSR223PostProcessor>
       <hashTree/>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="header Manager" enabled="true">
@@ -153,14 +216,15 @@ log.info(&quot;Executando os testes!&quot;)
         <stringProp name="scriptLanguage">groovy</stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}" enabled="true">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
         <stringProp name="cacheKey">true</stringProp>
         <stringProp name="script">
+if(vars.get(&quot;versaoApp&quot;) == null){
 
-    def url = &apos;https://devapp.seg-social.pt/eeaoc/fraw/version?dswid=3504&apos;
+	def url = &apos;https://devapp.seg-social.pt/eeaoc/fraw/version?dswid=3504&apos;
     def connection = new URL(url).openConnection()
     connection.setRequestMethod(&apos;GET&apos;)
     connection.connect()
@@ -177,21 +241,50 @@ log.info(&quot;Executando os testes!&quot;)
         log.warn(&quot;Não foi possível encontrar a versão&quot;)
     }
 
-</stringProp>
+}</stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcerto" enabled="true">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="randomNumber">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy
+
+def sampler = ctx.getCurrentSampler()
+
+if (sampler instanceof HTTPSamplerProxy ) {
+	def rand = new Random()
+	def primeiro = rand.nextInt(9) + 1
+	def resto = (1..10).collect { rand.nextInt(10) }
+	def numero = ([primeiro] + resto).join(&quot;&quot;)
+	vars.put(&quot;nissPSRandom&quot;, numero)
+
+}</stringProp>
+      </JSR223PreProcessor>
+      <hashTree/>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcerto">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
         <stringProp name="cacheKey">true</stringProp>
         <stringProp name="script">import groovy.json.JsonSlurper
-def json = new JsonSlurper().parseText(sampler.getArguments().getArgument(0).getValue())
 
-def acerto = json.valores[0].acerto
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy
 
-log.info(&quot;\nValor do campo &apos;acerto&apos; enviado: ${acerto}&quot;)
-vars.put(&quot;valorDoCampoAcerto&quot;, acerto)</stringProp>
+def sampler = ctx.getCurrentSampler()
+
+if (sampler instanceof HTTPSamplerProxy ) {
+	def json = new JsonSlurper().parseText(sampler.getArguments().getArgument(0).getValue())
+	def acerto = json.valores[0].acerto
+	log.info(&quot;\nValor do campo &apos;acerto&apos; enviado: ${acerto}&quot;)
+	vars.put(&quot;valorDoCampoAcerto&quot;, acerto)
+    
+}
+
+
+
+</stringProp>
       </JSR223PreProcessor>
       <hashTree/>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="hasResults ${versaoApp}">
@@ -593,7 +686,7 @@ else
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="teste na api ${versaoApp}" enabled="false">
-          <stringProp name="HTTPSampler.domain">devapp.seg-social.pt</stringProp>
+          <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
           <stringProp name="HTTPSampler.path">/eeaoc/fraw/version?dswid=3504</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -604,7 +697,7 @@ else
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}" enabled="true">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -795,11 +888,11 @@ else
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request">
-          <stringProp name="HTTPSampler.domain">devapp.seg-social.pt</stringProp>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+          <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">/eeaoc/rest/eeaoc/valores-remuneracao/entidade-empregadora/v2/20004080566</stringProp>
+          <stringProp name="HTTPSampler.path">${path}/v2/20004080566</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -862,11 +955,11 @@ if (!json.comprovativoEntrega) {
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="prueba">
-          <stringProp name="HTTPSampler.domain">devapp.seg-social.pt</stringProp>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="prueba" enabled="true">
+          <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">/eeaoc/rest/eeaoc/valores-remuneracao/entidade-empregadora/v2/20004080566</stringProp>
+          <stringProp name="HTTPSampler.path">${path}/v2/20004080566</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -907,7 +1000,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BATCH_VCD">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BATCH_VCD" enabled="true">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -935,20 +1028,22 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
           </collectionProp>
         </HeaderManager>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_1">
-          <stringProp name="HTTPSampler.domain">devapp.seg-social.pt</stringProp>
-          <stringProp name="HTTPSampler.port">443</stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">/eeaoc/rest/eeaoc/valores-remuneracao/entidade-empregadora/v2/10010338156</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps diferentes para tipo de qualificações diferentes" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
     &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
     &quot;valores&quot;: [&#xd;
         {&#xd;
@@ -957,29 +1052,613 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
             &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
-            &quot;dias&quot;: 0.5,&#xd;
-            &quot;valor&quot;: 0.1&#xd;
+            &quot;dias&quot;: 1,&#xd;
+            &quot;valor&quot;: 1&#xd;
         }&#xd;
     ]&#xd;
 }&#xd;
 </stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
-            <stringProp name="scriptLanguage">groovy</stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
 expectField(&quot;comprovativoEntrega&quot;)</stringProp>
-          </JSR223PostProcessor>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 2,&#xd;
+            &quot;valor&quot;: 2&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;ARM&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 3,&#xd;
+            &quot;valor&quot;: 3&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}//10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;ARM&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 4,&#xd;
+            &quot;valor&quot;: 4&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;DPEE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 4,&#xd;
+            &quot;valor&quot;: 4&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;DPEE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 6,&#xd;
+            &quot;valor&quot;: 6&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;TCO&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 7,&#xd;
+            &quot;valor&quot;: 7&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;TCO&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 8,&#xd;
+            &quot;valor&quot;: 8&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">def expectField = props.get(&quot;expectField&quot;)
+expectField(&quot;comprovativoEntrega&quot;)</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSPS IGUAL NATUREZA DISTINTAS" enabled="false"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${NISSPS},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;${valorNaturezaRemuneracao}&quot;,&#xd;
+            &quot;dias&quot;: 1,&#xd;
+            &quot;valor&quot;: 1&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${NISSPS},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 1,&#xd;
+            &quot;valor&quot;: 1&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;ARM&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;N&quot;,&#xd;
+            &quot;dias&quot;: 3,&#xd;
+            &quot;valor&quot;: 3&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;ARM&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;${valorNaturezaRemuneracao}&quot;,&#xd;
+            &quot;dias&quot;: 4,&#xd;
+            &quot;valor&quot;: 4&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;DPEE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 4,&#xd;
+            &quot;valor&quot;: 4&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;DPEE&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 6,&#xd;
+            &quot;valor&quot;: 6&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;TCO&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 7,&#xd;
+            &quot;valor&quot;: 7&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${path}/10010338156</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+    &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
+    &quot;valores&quot;: [&#xd;
+        {&#xd;
+            &quot;nissTrabalhador&quot;: ${nissPSRandom},&#xd;
+            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;TCO&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;dias&quot;: 8,&#xd;
+            &quot;valor&quot;: 8&#xd;
+        }&#xd;
+    ]&#xd;
+}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
           <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Query_Arr_BatchTVCD">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Query_Arr_BatchTVCD" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT
     ec.NISS_EE,
@@ -1036,7 +1715,7 @@ else
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="FRAB.ARGUMENTO_EXECUCAO">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="FRAB.ARGUMENTO_EXECUCAO" enabled="false">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -1047,7 +1726,7 @@ else
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault" enabled="true">
           <stringProp name="dataSource">ptecConnection</stringProp>
           <stringProp name="query">SELECT * FROM FRAB.argumento_execucao where identificador_execucao in (&apos;cd056a5cbe34479cb69601fecd1e2fbb&apos;)</stringProp>
           <stringProp name="queryArguments"></stringProp>
@@ -1060,7 +1739,7 @@ else
           <stringProp name="variableNames">IDENTIFICADOR_EXECUCAO, VALOR_SIMPLES, VALOR_SERIALIZADO, NOME, DESCRICAO, OBRIGATORIO, TIPO, IDENTIFICADOR_ARGUMENTO</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -1080,7 +1759,7 @@ log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -1088,7 +1767,7 @@ log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp
 
 log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
 
-if(hasCount &gt;= 1){
+if(hasCount &gt;= 3){
 	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
 }
 else
