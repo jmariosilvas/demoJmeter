@@ -49,7 +49,7 @@
         <stringProp name="username">idq</stringProp>
       </JDBCDataSource>
       <hashTree/>
-      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="ptecConnection ">
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="ptecConnection " enabled="true">
         <boolProp name="autocommit">true</boolProp>
         <stringProp name="checkQuery"></stringProp>
         <stringProp name="connectionAge">5000</stringProp>
@@ -122,7 +122,7 @@ log.info(&quot;Executando os testes!&quot;)
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BatchTratamentoValoresComunicadosDiferenca">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BatchTratamentoValoresComunicadosDiferenca" enabled="true">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -228,7 +228,7 @@ else
           <stringProp name="variableNames">IDENTIFICADOR_EXECUCAO, VALOR_SIMPLES, VALOR_SERIALIZADO, NOME, DESCRICAO, OBRIGATORIO, TIPO, IDENTIFICADOR_ARGUMENTO</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -248,6 +248,178 @@ log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="formmater" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def response = prev.getResponseDataAsString()
+
+// separa as linhas
+def linhas = response.split(&quot;\n&quot;).collect { it.trim() }
+
+// separa as colunas (espaços múltiplos)
+def tabela = linhas.collect { it.split(/\s+/) }
+
+// calcula a largura de cada coluna
+def larguras = []
+
+for (cols in tabela) {
+    for (int i = 0; i &lt; cols.size(); i++) {
+        def col = cols[i]
+        if (i &gt;= larguras.size()) {
+            larguras &lt;&lt; col.size()
+        } else if (col.size() &gt; larguras[i]) {
+            larguras[i] = col.size()
+        }
+    }
+}
+
+// monta a tabela formatada
+def output = []
+for (cols in tabela) {
+    def linha = []
+    for (int i = 0; i &lt; cols.size(); i++) {
+        linha &lt;&lt; cols[i].padRight(larguras[i])
+    }
+    output &lt;&lt; linha.join(&quot;  &quot;)
+}
+
+log.info(&quot;Tabela formatada:\n&quot; + output.join(&quot;\n&quot;))</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def hasCount = vars.get(&quot;IDENTIFICADOR_ARGUMENTO_#&quot;)?.trim()?.toInteger()
+
+log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
+
+if(hasCount &gt;= 1){
+	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarUnidade_processadas">
+          <stringProp name="dataSource">ptecConnection</stringProp>
+          <stringProp name="query">SELECT * FROM FRAB.argumento_execucao where identificador_execucao in (&apos;345bf4c9acc64435880bcd187c53d549&apos;)</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">IDENTIFICADOR_EXECUCAO, VALOR_SIMPLES, VALOR_SERIALIZADO, NOME, DESCRICAO, OBRIGATORIO, TIPO, IDENTIFICADOR_ARGUMENTO</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def response = prev.getResponseDataAsString()
+
+if(response.contains(&quot;Por omissao, &lt;ptss&gt;.&quot;)){
+	log.info(&quot;Validar omissão, ptss [ok]&quot;)
+	prev.setSuccessful(true)
+
+}else{
+	log.error(&quot;Validar de omissão não encontrado ptss&quot;)
+	prev.setSuccessful(false)
+	}
+
+
+log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="formmater" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def response = prev.getResponseDataAsString()
+
+// separa as linhas
+def linhas = response.split(&quot;\n&quot;).collect { it.trim() }
+
+// separa as colunas (espaços múltiplos)
+def tabela = linhas.collect { it.split(/\s+/) }
+
+// calcula a largura de cada coluna
+def larguras = []
+
+for (cols in tabela) {
+    for (int i = 0; i &lt; cols.size(); i++) {
+        def col = cols[i]
+        if (i &gt;= larguras.size()) {
+            larguras &lt;&lt; col.size()
+        } else if (col.size() &gt; larguras[i]) {
+            larguras[i] = col.size()
+        }
+    }
+}
+
+// monta a tabela formatada
+def output = []
+for (cols in tabela) {
+    def linha = []
+    for (int i = 0; i &lt; cols.size(); i++) {
+        linha &lt;&lt; cols[i].padRight(larguras[i])
+    }
+    output &lt;&lt; linha.join(&quot;  &quot;)
+}
+
+log.info(&quot;Tabela formatada:\n&quot; + output.join(&quot;\n&quot;))</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def hasCount = vars.get(&quot;IDENTIFICADOR_ARGUMENTO_#&quot;)?.trim()?.toInteger()
+
+log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
+
+if(hasCount &gt;= 1){
+	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="regras_validacao_valor_comunicado">
+          <stringProp name="dataSource">dbConnection</stringProp>
+          <stringProp name="query">SELECT * FROM EEAOC.validacao_valor_comunicado where tipo_validacao in (&apos;CONS_ARD&apos;, &apos;CON_SOMA_ARD&apos;,&apos;EXIG_ARD&apos;) ORDER BY REGRA_VALIDACAO</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">tipo_validacao</stringProp>
+        </JDBCSampler>
+        <hashTree>
           <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="formmater">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
@@ -292,7 +464,7 @@ log.info(&quot;Tabela formatada:\n&quot; + output.join(&quot;\n&quot;))</stringP
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
-            <stringProp name="script">def hasCount = vars.get(&quot;IDENTIFICADOR_ARGUMENTO_#&quot;)?.trim()?.toInteger()
+            <stringProp name="script">def hasCount = vars.get(&quot;tipo_validacao_#&quot;)?.trim()?.toInteger()
 
 log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
 
@@ -311,7 +483,7 @@ else
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="teste na api ${versaoApp}">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="teste na api ${versaoApp}" enabled="true">
           <stringProp name="HTTPSampler.domain">devapp.seg-social.pt</stringProp>
           <stringProp name="HTTPSampler.path">/eeaoc/fraw/version?dswid=3504</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
