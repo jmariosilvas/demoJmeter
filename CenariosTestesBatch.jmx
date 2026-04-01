@@ -128,6 +128,42 @@ if (sampler instanceof HTTPSamplerProxy ) {
 </stringProp>
       </JSR223PostProcessor>
       <hashTree/>
+      <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="formmaterBD" enabled="true">
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="script">def sampler = ctx.getCurrentSampler()
+
+if (sampler instanceof org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler) {
+	def response = prev.getResponseDataAsString()
+	def linhas = response.split(&quot;\n&quot;).collect { it.trim() }
+	def tabela = linhas.collect { it.split(/\s+/) }
+	def larguras = []
+	
+	for (cols in tabela) {
+	    for (int i = 0; i &lt; cols.size(); i++) {
+	        def col = cols[i]
+	        if (i &gt;= larguras.size()) {
+	            larguras &lt;&lt; col.size()
+	        } else if (col.size() &gt; larguras[i]) {
+	            larguras[i] = col.size()
+	        }
+	    }
+	}
+	def output = []
+	for (cols in tabela) {
+	    def linha = []
+	    for (int i = 0; i &lt; cols.size(); i++) {
+	        linha &lt;&lt; cols[i].padRight(larguras[i])
+	    }
+	    output &lt;&lt; linha.join(&quot;  &quot;)
+	}
+	
+	log.info(&quot;Tabela formatada:\n&quot; + output.join(&quot;\n&quot;))
+}</stringProp>
+        <stringProp name="scriptLanguage">groovy</stringProp>
+      </JSR223PostProcessor>
+      <hashTree/>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="header Manager" enabled="true">
         <collectionProp name="HeaderManager.headers">
           <elementProp name="" elementType="Header">
@@ -216,7 +252,7 @@ log.info(&quot;Executando os testes!&quot;)
         <stringProp name="scriptLanguage">groovy</stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="versao: ${versaoApp}" enabled="true">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
@@ -244,7 +280,7 @@ if(vars.get(&quot;versaoApp&quot;) == null){
 }</stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="randomNumber">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="randomNumber" enabled="true">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
@@ -263,7 +299,7 @@ if (sampler instanceof HTTPSamplerProxy ) {
 }</stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcerto">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcerto" enabled="true">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
@@ -287,7 +323,7 @@ if (sampler instanceof HTTPSamplerProxy ) {
 </stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="hasResults ${versaoApp}">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="hasResults ${versaoApp}" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -697,7 +733,7 @@ else
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="${versaoApp}" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1028,9 +1064,24 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
           </collectionProp>
         </HeaderManager>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps diferentes para tipo de qualificações diferentes" enabled="true"/>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="env" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="niss_ee" elementType="Argument">
+              <stringProp name="Argument.name">niss_ee</stringProp>
+              <stringProp name="Argument.value">10010338156</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="niss_ps" elementType="Argument">
+              <stringProp name="Argument.name">niss_ps</stringProp>
+              <stringProp name="Argument.value">11321828598</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps diferentes para tipo de qualificações diferentes" enabled="false"/>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
             <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -1074,7 +1125,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
             <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -1406,7 +1457,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;${valorNaturezaRemuneracao}&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
             &quot;dias&quot;: 1,&#xd;
             &quot;valor&quot;: 1&#xd;
         }&#xd;
@@ -1440,7 +1491,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+             &quot;naturezaRemuneracao&quot;: &quot;${valorNaturezaRemuneracao}&quot;,&#xd;
             &quot;dias&quot;: 1,&#xd;
             &quot;valor&quot;: 1&#xd;
         }&#xd;
@@ -1542,7 +1593,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;DPEE&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;F&quot;,&#xd;
             &quot;dias&quot;: 4,&#xd;
             &quot;valor&quot;: 4&#xd;
         }&#xd;
@@ -1576,7 +1627,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;DPEE&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;${valorNaturezaRemuneracao}&quot;,&#xd;
             &quot;dias&quot;: 6,&#xd;
             &quot;valor&quot;: 6&#xd;
         }&#xd;
@@ -1610,7 +1661,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;TCO&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;R&quot;,&#xd;
             &quot;dias&quot;: 7,&#xd;
             &quot;valor&quot;: 7&#xd;
         }&#xd;
@@ -1644,7 +1695,7 @@ expectField(&quot;comprovativoEntrega&quot;)</stringProp>
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
             &quot;anoMes&quot;: &quot;202603&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;TCO&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;${valorNaturezaRemuneracao}&quot;,&#xd;
             &quot;dias&quot;: 8,&#xd;
             &quot;valor&quot;: 8&#xd;
         }&#xd;
@@ -1714,6 +1765,85 @@ else
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="ENTIDADE_CANDIDATO_PROCESSAMENTO" enabled="true">
+          <stringProp name="dataSource">dbConnection</stringProp>
+          <stringProp name="query">SELECT * FROM eeaoc.candidato_processamento where niss_ee=${niss_ee} and niss_ps=${niss_ps}</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">ID_CANDIDATO_PROCESSAMENTO,  NISS_EE, NISS_PS, ANO_MES_INICIO,  ESTADO, DATA_ESTADO,  ANO_MES_FIM,  TIPO_QUALIFICACAO,  ADESAO_OFICIOSA</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query trouxe dados" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">//def hasCount = vars.get(&quot;ESTADO_1&quot;)?.trim()?.toInteger()
+def hasCount = vars.get(&quot;ESTADO_1&quot;)?.trim()?.toString()
+
+log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
+
+if(hasCount == &quot;INICIAL&quot;){
+	log.info(&quot;O ESTADO É ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;O ESTAD RETORNADO NÃO É O ESPERADO, RETORNADO: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Validar registo do processamento [RN0068]"/>
+        <hashTree>
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JOIN [valor_comunicado_diferenca e processamento_valor_dif]">
+            <stringProp name="dataSource">dbConnection</stringProp>
+            <stringProp name="query">SELECT v.*, p.*
+FROM EEAOC.valor_comunicado_diferenca v
+JOIN EEAOC.processamento_valor_dif p
+    ON v.id_valor_comunicado_diferenca = p.id_valor_comunicado_diferenca</stringProp>
+            <stringProp name="queryArguments"></stringProp>
+            <stringProp name="queryArgumentsTypes"></stringProp>
+            <stringProp name="queryTimeout"></stringProp>
+            <stringProp name="queryType">Select Statement</stringProp>
+            <stringProp name="resultSetHandler">Store as String</stringProp>
+            <stringProp name="resultSetMaxRows"></stringProp>
+            <stringProp name="resultVariable"></stringProp>
+            <stringProp name="variableNames">QTTREGISTOS</stringProp>
+          </JDBCSampler>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="validar que existe 1 registro" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">def hasCount = vars.get(&quot;QTTREGISTOS_#&quot;)?.trim()?.toInteger()
+
+if(hasCount &gt;= 2)
+{
+	log.info(&quot;\nQTT DE REGISTOS: ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+    log.ERROR(&quot;\nQTT DE REGISTOS: ${hasCount} não corresponse a esperada, possivel Bug.&quot;)
+	
+}
+
+</stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="FRAB.ARGUMENTO_EXECUCAO" enabled="false">
         <intProp name="ThreadGroup.num_threads">1</intProp>
@@ -1729,6 +1859,74 @@ else
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault" enabled="true">
           <stringProp name="dataSource">ptecConnection</stringProp>
           <stringProp name="query">SELECT * FROM FRAB.argumento_execucao where identificador_execucao in (&apos;cd056a5cbe34479cb69601fecd1e2fbb&apos;)</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">IDENTIFICADOR_EXECUCAO, VALOR_SIMPLES, VALOR_SERIALIZADO, NOME, DESCRICAO, OBRIGATORIO, TIPO, IDENTIFICADOR_ARGUMENTO</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def response = prev.getResponseDataAsString()
+
+if(response.contains(&quot;Por omissao, &lt;ptss&gt;.&quot;)){
+	log.info(&quot;Validar omissão, ptss [ok]&quot;)
+	prev.setSuccessful(true)
+
+}else{
+	log.error(&quot;Validar de omissão não encontrado ptss&quot;)
+	prev.setSuccessful(false)
+	}
+
+
+log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def hasCount = vars.get(&quot;IDENTIFICADOR_ARGUMENTO_#&quot;)?.trim()?.toInteger()
+
+log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
+
+if(hasCount &gt;= 3){
+	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="GR.HISTORICO_ANUAL" enabled="false">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault" enabled="true">
+          <stringProp name="dataSource">ptecConnection</stringProp>
+          <stringProp name="query">SELECT * FROM GR.HISTORICO_ANUAL;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="queryTimeout"></stringProp>
