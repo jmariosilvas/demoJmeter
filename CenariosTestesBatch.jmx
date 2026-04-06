@@ -51,6 +51,8 @@
           </elementProp>
         </collectionProp>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="util_PostProcessor">
@@ -331,7 +333,7 @@ if (sampler instanceof HTTPSamplerProxy ) {
 </stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcertov2">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcertov2" enabled="true">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
@@ -1889,7 +1891,7 @@ else
           </hashTree>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BATCH_VCD_1_CAND_ANOMES">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BATCH_VCD_1_CAND_ANOMES" enabled="true">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -1900,7 +1902,7 @@ else
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="header Manager">
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="header Manager" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="" elementType="Header">
               <stringProp name="Header.name">accept</stringProp>
@@ -1917,7 +1919,7 @@ else
           </collectionProp>
         </HeaderManager>
         <hashTree/>
-        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="env">
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="env" enabled="true">
           <collectionProp name="Arguments.arguments">
             <elementProp name="niss_ee" elementType="Argument">
               <stringProp name="Argument.name">niss_ee</stringProp>
@@ -1942,7 +1944,7 @@ else
           </collectionProp>
         </Arguments>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
             <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
@@ -1961,9 +1963,9 @@ else
     &quot;buildVersion&quot;: &quot;${versaoApp}&quot;,&#xd;
     &quot;valores&quot;: [&#xd;
         {&#xd;
-            &quot;nissTrabalhador&quot;: ${NISSPS},&#xd;
+            &quot;nissTrabalhador&quot;: &quot;${__RandomString(11,0123456789,NUMERO)}&quot;,&#xd;
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
-            &quot;anoMes&quot;: &quot;202512&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202412&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
             &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
             &quot;dias&quot;: 1,&#xd;
@@ -1978,7 +1980,7 @@ else
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2006,7 +2008,7 @@ WHERE e.comprovativo_entrega = &apos;${comprovativoEntrega}&apos;</stringProp>
           <stringProp name="variableNames">ID_ENTIDADE_COMUNICADA,NISS_EE,NISS_EE_ENTREGA,COMPROVATIVO_ENTREGA,DATA_COMUNICACAO,DATA_REGISTO,SUBSISTEMA,UTILIZADOR,CODIGO_EXTERNO,ID_FICHEIRO_FRAW,ID_VALOR_COMUNICADO_DIFERENCA,ID_ENTIDADE_COMUNICADA,NISS_PS,TIPO_QLF,ANO_MES,DIAS,VALOR,NATUREZA_REMUNERACAO,TEMA,DATA_PROCESSAMENTO,NUMERO_PEDIDO_FORA_PRAZO,TEMA_HISTORICO_MENSAL,DATA_TEMA_HISTORICO_MENSAL</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2028,12 +2030,55 @@ else
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">${time}</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Query_Arr_BatchTVCD">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALIAR RS0178">
+          <stringProp name="dataSource">dbConnection</stringProp>
+          <stringProp name="query">select * from eeaoc.processamento_valor_dif pvd
+JOIN eeaoc.valor_comunicado_diferenca vcd 
+ON pvd.ID_VALOR_COMUNICADO_DIFERENCA = vcd.ID_VALOR_COMUNICADO_DIFERENCA
+WHERE vcd.ANO_MES = &apos;202412&apos;</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">ID_PROCESSAMENTO_VALOR_DIF,ID_VALOR_COMUNICADO_DIFERENCA,VALOR_BASE_REMUNERACAO,VALOR_BASE_DIAS,ORIGEM,IDENTIFICADOR_VALOR_COM,IDENTIFICADOR_VALOR_COM_TOTAL,DATA_PROCESSAMENTO,ID_VALOR_COMUNICADO_DIFERENCA,ID_ENTIDADE_COMUNICADA,NISS_PS,TIPO_QLF,ANO_MES,DIAS,VALOR,NATUREZA_REMUNERACAO,TEMA,DATA_PROCESSAMENTO,NUMERO_PEDIDO_FORA_PRAZO,TEMA_HISTORICO_MENSAL,DATA_TEMA_HISTORICO_MENSAL</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def hasCount = vars.get(&quot;ID_PROCESSAMENTO_VALOR_DIF_#&quot;)?.trim()?.toInteger()
+
+
+
+if(hasCount &gt;=1 ){
+	log.info(&quot;\n\nQTT DE REGISTOS OK: ${hasCount}&quot;)
+}
+else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${time}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Query_Arr_BatchTVCD" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT
     ec.NISS_EE,
@@ -2056,7 +2101,7 @@ ORDER BY ec.DATA_COMUNICACAO DESC</stringProp>
           <stringProp name="variableNames">NISS_EE</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2079,7 +2124,7 @@ else
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="FRAB.argumento_execucao">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="FRAB.argumento_execucao" enabled="true">
           <stringProp name="dataSource">ptecConnection</stringProp>
           <stringProp name="query">SELECT * FROM FRAB.argumento_execucao where identificador_execucao in (&apos;${identificadorExecucao}&apos;)</stringProp>
           <stringProp name="queryArguments"></stringProp>
@@ -2092,7 +2137,7 @@ else
           <stringProp name="variableNames">IDENTIFICADOR_EXECUCAO, VALOR_SIMPLES, VALOR_SERIALIZADO, NOME, DESCRICAO, OBRIGATORIO, TIPO, IDENTIFICADOR_ARGUMENTO</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandoResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2112,7 +2157,7 @@ log.info(&quot;Valroes em PTEC ersponse completo: \n&quot;+response)</stringProp
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="manpulandodbResponse" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2135,7 +2180,7 @@ else
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="ENTIDADE_CANDIDATO_PROCESSAMENTO">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="ENTIDADE_CANDIDATO_PROCESSAMENTO" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT * FROM eeaoc.candidato_processamento where niss_ee=${niss_ee} and niss_ps=${niss_ps}</stringProp>
           <stringProp name="queryArguments"></stringProp>
@@ -2148,7 +2193,7 @@ else
           <stringProp name="variableNames">ID_CANDIDATO_PROCESSAMENTO,  NISS_EE, NISS_PS, ANO_MES_INICIO,  ESTADO, DATA_ESTADO,  ANO_MES_FIM,  TIPO_QUALIFICACAO,  ADESAO_OFICIOSA</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query trouxe dados">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query trouxe dados" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2177,12 +2222,12 @@ if(vars.get(&quot;ESTADOT_1&quot;)?.trim()?.toString() == null){
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">${time}</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALIDAR REGISTO EE, VCD, PROCESSAMENTOVDF">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALIDAR REGISTO EE, VCD, PROCESSAMENTOVDF" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT e.*, v.*, p.*
 FROM EEAOC.entidade_comunicada e
@@ -2201,7 +2246,7 @@ WHERE e.comprovativo_entrega = &apos;${comprovativoEntrega}&apos;</stringProp>
           <stringProp name="variableNames">ID_HAS_REG</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query trouxe dados">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query trouxe dados" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2220,14 +2265,14 @@ if(!hasCount == 1){
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">${time}</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Validar registo do processamento [RN0068]"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Validar registo do processamento [RN0068]" enabled="true"/>
         <hashTree>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JOIN [valor_comunicado_diferenca e processamento_valor_dif]">
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JOIN [valor_comunicado_diferenca e processamento_valor_dif]" enabled="true">
             <stringProp name="dataSource">dbConnection</stringProp>
             <stringProp name="query">SELECT v.*, p.*
 FROM EEAOC.valor_comunicado_diferenca v
@@ -2243,7 +2288,7 @@ JOIN EEAOC.processamento_valor_dif p
             <stringProp name="variableNames">QTTREGISTOS</stringProp>
           </JDBCSampler>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="validar que existe 1 registro">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="validar que existe 1 registro" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
@@ -2268,7 +2313,7 @@ else
             <hashTree/>
           </hashTree>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
           <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -2400,7 +2445,7 @@ response.valores.eachWithIndex { item, index -&gt;
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="validarExecucaoPeloAppDefault" enabled="true">
           <stringProp name="dataSource">ptecConnection</stringProp>
           <stringProp name="query">SELECT * FROM FRAB.argumento_execucao where identificador_execucao in (&apos;4217482da10248ecabdaade147a1d772&apos;)</stringProp>
           <stringProp name="queryArguments"></stringProp>
