@@ -1928,7 +1928,7 @@ else
             </elementProp>
             <elementProp name="niss_ps" elementType="Argument">
               <stringProp name="Argument.name">niss_ps</stringProp>
-              <stringProp name="Argument.value">11321828592</stringProp>
+              <stringProp name="Argument.value">11321828591</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="comprovativoEntrega" elementType="Argument">
@@ -1965,11 +1965,11 @@ else
         {&#xd;
             &quot;nissTrabalhador&quot;: ${niss_ps},&#xd;
             &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
-            &quot;anoMes&quot;: &quot;202112&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;202511&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
             &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
-            &quot;dias&quot;: 2,&#xd;
-            &quot;valor&quot;: 3&#xd;
+            &quot;dias&quot;: 6,&#xd;
+            &quot;valor&quot;: 6&#xd;
         }&#xd;
     ]&#xd;
 }&#xd;
@@ -2002,7 +2002,7 @@ vars.put(&quot;valorBody&quot;, json.valores[0].valor.toString())
 </stringProp>
             </JSR223PostProcessor>
             <hashTree/>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">authorization</stringProp>
@@ -2013,7 +2013,7 @@ vars.put(&quot;valorBody&quot;, json.valores[0].valor.toString())
             <hashTree/>
           </hashTree>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="RS177-ARD">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="RS177-ARD" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT  ec.NISS_EE AS NISS_EE,    vcd.NISS_PS AS NISS_PS,    vcd.ANO_MES AS ANOMES,    vcd.NATUREZA_REMUNERACAO AS NATUREZA,    vcd.TIPO_QLF AS TIPO_QLF  
 FROM eeaoc.ENTIDADE_COMUNICADA ec 
@@ -2033,7 +2033,7 @@ GROUP BY ec.NISS_EE, vcd.NISS_PS, vcd.ANO_MES, vcd.NATUREZA_REMUNERACAO, vcd.TIP
           <stringProp name="variableNames">NISS_EE, NISS_PS, ANOMES, NATUREZA, TIPO_QLF</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2055,7 +2055,7 @@ else
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">3000</stringProp>
           </ConstantTimer>
           <hashTree/>
@@ -2077,7 +2077,7 @@ WHERE e.comprovativo_entrega = &apos;${comprovativoEntrega}&apos;</stringProp>
           <stringProp name="variableNames">ID_ENTIDADE_COMUNICADA, NISS_EE, NISS_EE_ENTREGA, COMPROVATIVO_ENTREGA, DATA_COMUNICACAO, DATA_REGISTO, SUBSISTEMA, UTILIZADOR, CODIGO_EXTERNO, ID_FICHEIRO_FRAW, ID_VALOR_COMUNICADO_DIFERENCA, ID_ENTIDADE_COMUNICADA_1, NISS_PS, TIPO_QLF, ANO_MES, DIAS, VALOR, NATUREZA_REMUNERACAO, TEMA, DATA_PROCESSAMENTO, NUMERO_PEDIDO_FORA_PRAZO, TEMA_HISTORICO_MENSAL, DATA_TEMA_HISTORICO_MENSAL</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="PRUEB_VALOR_COMUNICADO_DIF_E_ENTIDADE_COMUNICADA">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="PRUEB_VALOR_COMUNICADO_DIF_E_ENTIDADE_COMUNICADA" enabled="true">
             <stringProp name="cacheKey">false</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2128,7 +2128,63 @@ if(hasCount &gt;= 1 ){
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">300</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="valor_comunicado">
+          <stringProp name="dataSource">dbConnection</stringProp>
+          <stringProp name="query">SELECT DIAS_DIFERENCA, VALOR_DIFERENCA, IDENTIFICADOR_DIFERENCA 
+FROM EEAOC.valor_comunicado where niss_ps = ${nissPSBody} 
+Order by ID_ENTIDADE_COMUNICADA desc fetch first 1 rows only</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames">DIAS_DIFERENCA, VALOR_DIFERENCA, IDENTIFICADOR_DIFERENCA</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="PRUEB_VALOR_COMUNICADO_DIF_E_ENTIDADE_COMUNICADA">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def hasCount = vars.get(&quot;IDENTIFICADOR_DIFERENCA_#&quot;)?.trim()?.toInteger()
+
+def falharTeste(msg) {
+    log.error(msg)
+    prev.setSuccessful(false)
+    prev.setResponseMessage(msg)
+}
+
+if(hasCount &gt;= 1 ){
+	
+	def dias = vars.get(&quot;DIAS_1&quot;).toString()
+	def valor = vars.get(&quot;VALOR_1&quot;).toString()
+
+	if(dias == &quot;${diasBody}&quot; ){
+		falharTeste(&quot;\nDIAS em  valor_comunicadodiferente da esperada: ${dias}no banco esta ${vars.get(&quot;DIAS_1&quot;).toString()}\n&quot;)
+	}
+	if(!valor == &quot;${valorBody}&quot; ){
+		falharTeste(&quot;\nVALOR em valor_comunicado diferente da esperada: ${valor} no banco esta ${valor}&quot;)
+	}
+	
+
+}else
+{
+    prev.setSuccessful(false) 
+    prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
+	
+}
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">300</stringProp>
           </ConstantTimer>
           <hashTree/>
@@ -2596,7 +2652,7 @@ response.valores.eachWithIndex { item, index -&gt;
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler">
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
           <boolProp name="displayJMeterProperties">false</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
           <boolProp name="displaySystemProperties">false</boolProp>
@@ -2658,7 +2714,7 @@ response.valores.eachWithIndex { item, index -&gt;
         <hashTree/>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes" enabled="true"/>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}" enabled="true">
             <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -2692,7 +2748,7 @@ response.valores.eachWithIndex { item, index -&gt;
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2704,7 +2760,7 @@ log.info(&quot;numero  salvo do niss &quot; + vars.get(&quot;numero&quot;))</str
             <hashTree/>
           </hashTree>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALIAR QUE EXISTE REGISTO EM VALOR COMUNICADO DIF E ENTIDADE COMUNICADA">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALIAR QUE EXISTE REGISTO EM VALOR COMUNICADO DIF E ENTIDADE COMUNICADA" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT e.*, v.*
 FROM EEAOC.entidade_COMUNICADA e
