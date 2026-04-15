@@ -1928,7 +1928,7 @@ else
             </elementProp>
             <elementProp name="niss_ps" elementType="Argument">
               <stringProp name="Argument.name">niss_ps</stringProp>
-              <stringProp name="Argument.value">11321828591</stringProp>
+              <stringProp name="Argument.value">11321828582</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="comprovativoEntrega" elementType="Argument">
@@ -1941,10 +1941,15 @@ else
               <stringProp name="Argument.value">4217482da10248ecabdaade147a1d772</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
+            <elementProp name="EXECBAT" elementType="Argument">
+              <stringProp name="Argument.name">EXECBAT</stringProp>
+              <stringProp name="Argument.value">Start ...</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
           </collectionProp>
         </Arguments>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
             <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
@@ -1968,8 +1973,8 @@ else
             &quot;anoMes&quot;: &quot;202511&quot;,&#xd;
             &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
             &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
-            &quot;dias&quot;: 6,&#xd;
-            &quot;valor&quot;: 6&#xd;
+            &quot;dias&quot;: 8,&#xd;
+            &quot;valor&quot;: 8&#xd;
         }&#xd;
     ]&#xd;
 }&#xd;
@@ -1980,7 +1985,7 @@ else
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2060,31 +2065,37 @@ else
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="REGISTO EM VALOR COMUNICADO DIF E ENTIDADE COMUNICADA">
-          <stringProp name="dataSource">dbConnection</stringProp>
-          <stringProp name="query">SELECT e.*, v.*
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="AGUARDANDO A EXECUÇÃO DO BATCH">
+          <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;STOP&quot;) != &quot;1&quot;)}</stringProp>
+        </WhileController>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+            <stringProp name="ConstantTimer.delay">20000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALOR COMUNICADO DIF E ENTIDADE COMUNICADA">
+            <stringProp name="dataSource">dbConnection</stringProp>
+            <stringProp name="query">SELECT e.niss_ee, e.data_comunicacao, v.niss_ps, v.tipo_qlf, v.ano_mes, v.dias, v.valor, v.natureza_remuneracao, v.tema, v.tema_historico_mensal
 FROM EEAOC.entidade_COMUNICADA e
 INNER JOIN EEAOC.VALOR_COMUNICADO_DIFERENCA v
     ON e.id_entidade_comunicada = v.id_entidade_comunicada
 WHERE e.comprovativo_entrega = &apos;${comprovativoEntrega}&apos;</stringProp>
-          <stringProp name="queryArguments"></stringProp>
-          <stringProp name="queryArgumentsTypes"></stringProp>
-          <stringProp name="queryTimeout"></stringProp>
-          <stringProp name="queryType">Select Statement</stringProp>
-          <stringProp name="resultSetHandler">Store as String</stringProp>
-          <stringProp name="resultSetMaxRows"></stringProp>
-          <stringProp name="resultVariable"></stringProp>
-          <stringProp name="variableNames">ID_ENTIDADE_COMUNICADA, NISS_EE, NISS_EE_ENTREGA, COMPROVATIVO_ENTREGA, DATA_COMUNICACAO, DATA_REGISTO, SUBSISTEMA, UTILIZADOR, CODIGO_EXTERNO, ID_FICHEIRO_FRAW, ID_VALOR_COMUNICADO_DIFERENCA, ID_ENTIDADE_COMUNICADA_1, NISS_PS, TIPO_QLF, ANO_MES, DIAS, VALOR, NATUREZA_REMUNERACAO, TEMA, DATA_PROCESSAMENTO, NUMERO_PEDIDO_FORA_PRAZO, TEMA_HISTORICO_MENSAL, DATA_TEMA_HISTORICO_MENSAL</stringProp>
-        </JDBCSampler>
-        <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="PRUEB_VALOR_COMUNICADO_DIF_E_ENTIDADE_COMUNICADA" enabled="true">
-            <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="script">def hasCount = vars.get(&quot;ID_ENTIDADE_COMUNICADA_#&quot;)?.trim()?.toInteger()
+            <stringProp name="queryArguments"></stringProp>
+            <stringProp name="queryArgumentsTypes"></stringProp>
+            <stringProp name="queryTimeout"></stringProp>
+            <stringProp name="queryType">Select Statement</stringProp>
+            <stringProp name="resultSetHandler">Store as String</stringProp>
+            <stringProp name="resultSetMaxRows"></stringProp>
+            <stringProp name="resultVariable"></stringProp>
+            <stringProp name="variableNames">NISS_EE, DATA_COMUNICACAO, NISS_PS, TIPO_QLF, ANO_MES, DIAS, VALOR, NATUREZA_REMUNERACAO, TEMA, TEMA_HISTORICO_MENSAL</stringProp>
+          </JDBCSampler>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="PRUEB_VALOR_COMUNICADO_DIF_E_ENTIDADE_COMUNICADA">
+              <stringProp name="cacheKey">false</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">def hasCount = vars.get(&quot;NISS_EE_#&quot;)?.trim()?.toInteger()
 
-
-log.info(&quot;\n\nQTT DE REGISTOS: ${hasCount}&quot;)
 def falharTeste(msg) {
     log.error(msg)
     prev.setSuccessful(false)
@@ -2124,14 +2135,35 @@ if(hasCount &gt;= 1 ){
 	
 }
 
+def valor1 = vars.get(&quot;NISS_EE_1&quot;).toString()
+
+
+
+if (vars.get(&quot;TEMA_1&quot;)) {
+    log.warn(&quot;Batch VCD executado o NISS_EE: ${valor1}&quot;)
+    vars.put(&quot;STOP&quot;, &quot;1&quot;)
+  
+
+    //validar valor esperado para tema ee temahistorico
+    if(vars.get(&quot;TEMA_1&quot;).toString() != &quot;PROCESSADO&quot;  ){
+		falharTeste(&quot;\n [Valor do TEMA diferente do esperado em VALOR_COMUNICADO_DIFERENCA.]&quot;)
+	}
+	if(vars.get(&quot;TEMA_HISTORICO_MENSAL_1&quot;).toString() != &quot;PROCESSADO&quot;  ){
+		falharTeste(&quot;\n [Valor do TEMA_HISTORICO_MENSAL diferente do esperado em VALOR_COMUNICADO_DIFERENCA.]&quot;)
+	}
+} else {
+    vars.put(&quot;STOP&quot;, &quot;0&quot;)
+    log.info(&quot;\n [WAITING] EXECUTE O BATCH PARA A UNIDADE: [EE: ${NISS_EE_1},PS: ${NISS_PS_1}, ${TIPO_QLF_1}, ${ANO_MES_1}, ${NATUREZA_REMUNERACAO_1} ]&quot;)
+}
+
+
+
+
 </stringProp>
-            <stringProp name="scriptLanguage">groovy</stringProp>
-          </JSR223PostProcessor>
-          <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-            <stringProp name="ConstantTimer.delay">300</stringProp>
-          </ConstantTimer>
-          <hashTree/>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
         </hashTree>
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="valor_comunicado">
           <stringProp name="dataSource">dbConnection</stringProp>
@@ -2162,14 +2194,14 @@ def falharTeste(msg) {
 
 if(hasCount &gt;= 1 ){
 	
-	def dias = vars.get(&quot;DIAS_1&quot;).toString()
-	def valor = vars.get(&quot;VALOR_1&quot;).toString()
-
-	if(dias == &quot;${diasBody}&quot; ){
-		falharTeste(&quot;\nDIAS em  valor_comunicadodiferente da esperada: ${dias}no banco esta ${vars.get(&quot;DIAS_1&quot;).toString()}\n&quot;)
+	def dias = vars.get(&quot;DIAS_DIFERENCA_1&quot;).toString()
+	def valor = vars.get(&quot;VALOR_DIFERENCA_1&quot;).toString()
+	
+	if(dias){
+		falharTeste(&quot;\n DIAS_DIFERENCA em  valor_comunicado diferente da esperada: ${diasBody} no banco esta ${dias} \n&quot;)
 	}
-	if(!valor == &quot;${valorBody}&quot; ){
-		falharTeste(&quot;\nVALOR em valor_comunicado diferente da esperada: ${valor} no banco esta ${valor}&quot;)
+	if(!valor){
+		falharTeste(&quot;\nVALOR_DIFERENCA em valor_comunicado diferente da esperada: ${valorBody} no banco esta ${valor}&quot;)
 	}
 	
 
