@@ -49,6 +49,11 @@
             <stringProp name="Argument.value">900</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="postCommitWaitTime" elementType="Argument">
+            <stringProp name="Argument.name">postCommitWaitTime</stringProp>
+            <stringProp name="Argument.value">10000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
@@ -333,7 +338,7 @@ if (sampler instanceof HTTPSamplerProxy ) {
 </stringProp>
       </JSR223PreProcessor>
       <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcertov2" enabled="true">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="catchLabelAcertov2">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
@@ -1891,7 +1896,7 @@ else
           </hashTree>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="VERIFICAR VALORES APÓS EXECUÇÃO DO BATCH 1 CAND">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="VERIFICAR VALORES APÓS EXECUÇÃO DO BATCH 1 CAND" enabled="true">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -1928,7 +1933,7 @@ else
             </elementProp>
             <elementProp name="niss_ps" elementType="Argument">
               <stringProp name="Argument.name">niss_ps</stringProp>
-              <stringProp name="Argument.value">11321828582</stringProp>
+              <stringProp name="Argument.value">75577728577</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="comprovativoEntrega" elementType="Argument">
@@ -1946,10 +1951,40 @@ else
               <stringProp name="Argument.value">Start ...</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
+            <elementProp name="acerto" elementType="Argument">
+              <stringProp name="Argument.name">acerto</stringProp>
+              <stringProp name="Argument.value">SIM</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="anoMes" elementType="Argument">
+              <stringProp name="Argument.name">anoMes</stringProp>
+              <stringProp name="Argument.value">202611</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="tipoQualificacao" elementType="Argument">
+              <stringProp name="Argument.name">tipoQualificacao</stringProp>
+              <stringProp name="Argument.value">MOE</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="naturezaRemuneracao" elementType="Argument">
+              <stringProp name="Argument.name">naturezaRemuneracao</stringProp>
+              <stringProp name="Argument.value">P</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="dias" elementType="Argument">
+              <stringProp name="Argument.name">dias</stringProp>
+              <stringProp name="Argument.value">3</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="valor" elementType="Argument">
+              <stringProp name="Argument.name">valor</stringProp>
+              <stringProp name="Argument.value">25</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
           </collectionProp>
         </Arguments>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="NISSps anoMes"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PRUEBA_${COUNTER}">
             <stringProp name="HTTPSampler.domain">${base_url}</stringProp>
@@ -1969,12 +2004,12 @@ else
     &quot;valores&quot;: [&#xd;
         {&#xd;
             &quot;nissTrabalhador&quot;: ${niss_ps},&#xd;
-            &quot;acerto&quot;: &quot;SIM&quot;,&#xd;
-            &quot;anoMes&quot;: &quot;202511&quot;,&#xd;
-            &quot;tipoQualificacao&quot;: &quot;MOE&quot;,&#xd;
-            &quot;naturezaRemuneracao&quot;: &quot;P&quot;,&#xd;
-            &quot;dias&quot;: 8,&#xd;
-            &quot;valor&quot;: 8&#xd;
+            &quot;acerto&quot;: &quot;${acerto}&quot;,&#xd;
+            &quot;anoMes&quot;: &quot;${anoMes}&quot;,&#xd;
+            &quot;tipoQualificacao&quot;: &quot;${tipoQualificacao}&quot;,&#xd;
+            &quot;naturezaRemuneracao&quot;: &quot;${naturezaRemuneracao}&quot;,&#xd;
+            &quot;dias&quot;: ${dias},&#xd;
+            &quot;valor&quot;: ${valor}&#xd;
         }&#xd;
     ]&#xd;
 }&#xd;
@@ -1985,7 +2020,7 @@ else
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="reuso de funcao">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2018,7 +2053,7 @@ vars.put(&quot;valorBody&quot;, json.valores[0].valor.toString())
             <hashTree/>
           </hashTree>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="RS177-ARD" enabled="true">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="RS177-ARD">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT  ec.NISS_EE AS NISS_EE,    vcd.NISS_PS AS NISS_PS,    vcd.ANO_MES AS ANOMES,    vcd.NATUREZA_REMUNERACAO AS NATUREZA,    vcd.TIPO_QLF AS TIPO_QLF  
 FROM eeaoc.ENTIDADE_COMUNICADA ec 
@@ -2038,7 +2073,7 @@ GROUP BY ec.NISS_EE, vcd.NISS_PS, vcd.ANO_MES, vcd.NATUREZA_REMUNERACAO, vcd.TIP
           <stringProp name="variableNames">NISS_EE, NISS_PS, ANOMES, NATUREZA, TIPO_QLF</stringProp>
         </JDBCSampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos" enabled="true">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Validar  que a query de  arranque vai trazer dois registos">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -2055,6 +2090,7 @@ else
     prev.setResponseMessage(&quot;\n\nQuantidade de registos idferente da esperada: ${hasCount}&quot;)
 	
 }
+vars.put(&quot;STOP&quot;,&quot;0&quot;)
 
 </stringProp>
             <stringProp name="scriptLanguage">groovy</stringProp>
@@ -2065,14 +2101,53 @@ else
           </ConstantTimer>
           <hashTree/>
         </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Enviando Comando a Frab">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">3000</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.path">/run-batch</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;batch&quot;: &quot;TratamentoValoresComunicadosDiferenca&quot;,&#xd;
+    &quot;NISS_EE&quot;: ${niss_ee},&#xd;
+    &quot;NISS_PS&quot;: ${niss_ps},&#xd;
+    &quot;ANO_MES&quot;: &quot;${anoMes}&quot;&#xd;
+    &#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Salvando o executionID">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import groovy.json.JsonSlurper
+
+def response = prev.getResponseDataAsString()
+def json = new JsonSlurper().parseText(response)
+
+
+vars.put(&quot;executionId&quot;, json.executionId as String)
+log.info(&quot;Execution ID capturado: &quot; + vars.get(&quot;executionId&quot;))</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
         <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="AGUARDANDO A EXECUÇÃO DO BATCH">
           <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;STOP&quot;) != &quot;1&quot;)}</stringProp>
         </WhileController>
         <hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
-            <stringProp name="ConstantTimer.delay">20000</stringProp>
-          </ConstantTimer>
-          <hashTree/>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="VALOR COMUNICADO DIF E ENTIDADE COMUNICADA">
             <stringProp name="dataSource">dbConnection</stringProp>
             <stringProp name="query">SELECT e.niss_ee, e.data_comunicacao, v.niss_ps, v.tipo_qlf, v.ano_mes, v.dias, v.valor, v.natureza_remuneracao, v.tema, v.tema_historico_mensal
@@ -2094,7 +2169,9 @@ WHERE e.comprovativo_entrega = &apos;${comprovativoEntrega}&apos;</stringProp>
               <stringProp name="cacheKey">false</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
-              <stringProp name="script">def hasCount = vars.get(&quot;NISS_EE_#&quot;)?.trim()?.toInteger()
+              <stringProp name="script">
+log.info(&quot;\nvalor de STOP: ${vars.get(&quot;STOP&quot;)}&quot;)
+def hasCount = vars.get(&quot;NISS_EE_#&quot;)?.trim()?.toInteger()
 
 def falharTeste(msg) {
     log.error(msg)
@@ -2139,8 +2216,8 @@ def valor1 = vars.get(&quot;NISS_EE_1&quot;).toString()
 
 
 
-if (vars.get(&quot;TEMA_1&quot;)) {
-    log.warn(&quot;Batch VCD executado o NISS_EE: ${valor1}&quot;)
+if (vars.get(&quot;TEMA_1&quot;)) { 
+    log.warn(&quot;\n\nBatch VCD executado o NISS_EE: ${valor1} com ExecutionId: ${vars.get(&quot;executionId&quot;)}&quot;)
     vars.put(&quot;STOP&quot;, &quot;1&quot;)
   
 
@@ -2163,9 +2240,14 @@ if (vars.get(&quot;TEMA_1&quot;)) {
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
+              <stringProp name="ConstantTimer.delay">8000</stringProp>
+              <stringProp name="TestPlan.comments">O tempo abaixo pode ser  alterado via testPlan </stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="valor_comunicado">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="valor_comunicado" enabled="true">
           <stringProp name="dataSource">dbConnection</stringProp>
           <stringProp name="query">SELECT DIAS_DIFERENCA, VALOR_DIFERENCA, IDENTIFICADOR_DIFERENCA 
 FROM EEAOC.valor_comunicado where niss_ps = ${nissPSBody} 
@@ -2197,7 +2279,7 @@ if(hasCount &gt;= 1 ){
 	def dias = vars.get(&quot;DIAS_DIFERENCA_1&quot;).toString()
 	def valor = vars.get(&quot;VALOR_DIFERENCA_1&quot;).toString()
 	
-	if(dias){
+	if(!dias){
 		falharTeste(&quot;\n DIAS_DIFERENCA em  valor_comunicado diferente da esperada: ${diasBody} no banco esta ${dias} \n&quot;)
 	}
 	if(!valor){
